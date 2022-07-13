@@ -2,18 +2,21 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"net/rpc"
-	"rpc-g7/rpc_interface"
+	"net/rpc/jsonrpc"
+	"rpc-g7/json_tcp"
 )
 
-var _ rpc_interface.HelloService = (*HelloServiceClient)(nil)
+var _ json_tcp.HelloService = (*HelloServiceClient)(nil)
 
 func NewHelloServiceClient(network, address string) (*HelloServiceClient, error) {
-	client, err := rpc.Dial(network, address)
+	conn, err := net.Dial(network, address)
 	if err != nil {
 		return nil, err
 	}
-
+	// 1.建立socket连接
+	client := rpc.NewClientWithCodec(jsonrpc.NewClientCodec(conn))
 	return &HelloServiceClient{
 		client: client,
 	}, nil
@@ -25,7 +28,7 @@ type HelloServiceClient struct {
 
 func (h *HelloServiceClient) Hello(request string, response *string) error {
 	// 1、建立socket连接
-	return h.client.Call(fmt.Sprintf("%s.Hello", rpc_interface.SERVICE_NAME), request, &response)
+	return h.client.Call(fmt.Sprintf("%s.Hello", json_tcp.SERVICE_NAME), request, &response)
 }
 
 func main() {
