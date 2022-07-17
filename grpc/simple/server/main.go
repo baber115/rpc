@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"rpc-g7/grpc/simple/middleware"
 	"rpc-g7/grpc/simple/pb"
 
 	"google.golang.org/grpc"
@@ -41,7 +42,10 @@ func (h *HelloServiceServer) Channel(Channel pb.HelloService_ChannelServer) erro
 
 func main() {
 	// new grpc server
-	server := grpc.NewServer()
+
+	// 添加认证中间件
+	auth := grpc.UnaryInterceptor(middleware.GrpcAuthUnaryServerInterceptor())
+	server := grpc.NewServer(auth)
 
 	//传参 grpc server 和 实现类
 	pb.RegisterHelloServiceServer(server, &HelloServiceServer{})

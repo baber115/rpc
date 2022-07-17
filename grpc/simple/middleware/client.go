@@ -16,6 +16,12 @@ func NewClientAuthentication(clientId, clientSecret string) *Authentication {
 	}
 }
 
+// WithClientCredentials todo
+func (a *Authentication) WithClientCredentials(clientID, clientSecret string) {
+	a.clientId = clientID
+	a.clientSecret = clientSecret
+}
+
 func (a *Authentication) GetRequestMetadata(ctx context.Context, uri ...string) (map[string]string, error) {
 	return map[string]string{
 		ClientHeaderKey: a.clientId,
