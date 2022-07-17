@@ -6,6 +6,8 @@ option go_package = "rpc-g7/grpc/simple/pb";
 // 定义RPC
 service HelloService {
   rpc Hello(Request)returns(Response);
+
+  rpc Channel (stream Request) returns (stream Response) {}
 }
 
 message Request {

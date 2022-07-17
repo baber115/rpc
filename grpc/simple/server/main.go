@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"rpc-g7/grpc/simple/pb"
 
@@ -17,6 +18,25 @@ func (h *HelloServiceServer) Hello(ctx context.Context, request *pb.Request) (*p
 	return &pb.Response{
 		Value: fmt.Sprintf("Hello, %s", request.Value),
 	}, nil
+}
+
+func (h *HelloServiceServer) Channel(Channel pb.HelloService_ChannelServer) error {
+	// 循环接收客户端发送的请求
+	for {
+		request, err := Channel.Recv()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+		err = Channel.Send(&pb.Response{
+			Value: "Hello " + request.Value,
+		})
+		if err != nil {
+			return err
+		}
+	}
 }
 
 func main() {
