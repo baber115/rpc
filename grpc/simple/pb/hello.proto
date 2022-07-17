@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package hello;
+option go_package = "rpc-g7/grpc/simple/pb";
+
+// 定义RPC
+service HelloService {
+  rpc Hello(Request)returns(Response);
+}
+
+message Request {
+  string value = 1;
+}
+
+message Response {
+  string value = 1;
+}
