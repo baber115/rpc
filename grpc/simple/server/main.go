@@ -45,8 +45,8 @@ func main() {
 
 	// 添加认证中间件
 	auth := grpc.UnaryInterceptor(middleware.GrpcAuthUnaryServerInterceptor())
-	server := grpc.NewServer(auth)
-
+	streamAuth := grpc.StreamInterceptor(middleware.GrpcAuthStreamServerInterceptor())
+	server := grpc.NewServer(auth, streamAuth)
 	//传参 grpc server 和 实现类
 	pb.RegisterHelloServiceServer(server, &HelloServiceServer{})
 

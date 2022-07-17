@@ -17,9 +17,14 @@ const (
 	ClientSecretKey = "client-secret"
 )
 
-// 服务端中间件
+// auth 中间件
 func GrpcAuthUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return newGrpcAuther().Auth
+}
+
+// stream 认证
+func GrpcAuthStreamServerInterceptor() grpc.StreamServerInterceptor {
+	return newGrpcAuther().streamAuth
 }
 
 // internal todo
@@ -82,4 +87,25 @@ func (g *grpcAuther) Auth(
 	}
 
 	return handler(ctx, req)
+}
+
+/**
+stream认证
+重写此方法，grpc.StreamServerInterceptor()
+**/
+func (g *grpcAuther) streamAuth(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+	fmt.Println("stream 认证")
+	fmt.Println(srv, info)
+	md, ok := metadata.FromIncomingContext(ss.Context())
+	if !ok {
+		panic(ok)
+	}
+
+	clientId, clientSecret := g.getClientCredentialsFromMeta(md)
+
+	if err := g.validateServiceCredential(clientId, clientSecret); err != nil {
+		panic(err)
+	}
+
+	return handler(srv, ss)
 }

@@ -16,8 +16,8 @@ func main() {
 	fmt.Println("case1 successfull")
 	case2()
 	fmt.Println("case2 successfull")
-	case3()
-	fmt.Println("case3 successfull")
+	// case3()
+	// fmt.Println("case3 successfull")
 }
 
 /**
