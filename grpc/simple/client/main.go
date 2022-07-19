@@ -16,8 +16,8 @@ func main() {
 	fmt.Println("case1 successfull")
 	case2()
 	fmt.Println("case2 successfull")
-	// case3()
-	// fmt.Println("case3 successfull")
+	case3()
+	fmt.Println("case3 successfull")
 }
 
 /**
@@ -76,7 +76,7 @@ func case2() {
 
 // 循环发出和循环接收
 func case3() {
-	conn, err := grpc.DialContext(context.Background(), ":1234", grpc.WithInsecure())
+	conn, err := grpc.Dial(":1234", grpc.WithInsecure(), grpc.WithPerRPCCredentials(middleware.NewClientAuthentication("admin", "123456")))
 	if err != nil {
 		panic(err)
 	}
