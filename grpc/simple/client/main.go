@@ -53,7 +53,8 @@ func NewClientCredential(ak, sk string) metadata.MD {
 }
 
 /**
-WithPerRPCCredentials
+case1每次都需要传参数，NewClientCredential("admin", "123456")，这么设计不合理
+可以用WithPerRPCCredentials，都会获取凭证注入到metadata中，然后每个用这个Conn发起请求的时候都可以自动注入metadata
 **/
 func case2() {
 	conn, err := grpc.Dial(":1234", grpc.WithInsecure(), grpc.WithPerRPCCredentials(middleware.NewClientAuthentication("admin", "123456")))
